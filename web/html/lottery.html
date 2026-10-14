@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>rsg-lottery</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/lottery.css">
+</head>
+<body>
+    <div id="app" class="hidden">
+        <div class="panel">
+            <header class="header">
+                <span class="header-spacer"></span>
+                <div class="header-text">
+                    <h1 data-l="title"></h1>
+                    <div class="subtitle" data-l="subtitle"></div>
+                </div>
+                <button class="icon-btn" id="closeBtn" >&#10005;</button>
+            </header>
+
+            <div class="jackpot">
+                <span class="jackpot-label" data-l="jackpot"></span>
+                <span class="jackpot-amount" id="jackpotAmount">$0</span>
+            </div>
+
+            <div class="info-bar">
+                <div class="info-item"><span class="info-label" data-l="ticketPrice"></span><span class="info-value" id="priceValue">-</span></div>
+                <div class="info-item"><span class="info-label" data-l="pick"></span><span class="info-value" id="pickValue">-</span></div>
+                <div class="info-item"><span class="info-label" data-l="drawIn"></span><span class="info-value" id="drawInValue">--:--:--</span></div>
+                <div class="info-item"><span class="info-label" data-l="perDraw"></span><span class="info-value" id="perDrawValue">-</span></div>
+            </div>
+
+            <div class="divider"><span>&#9670;</span></div>
+
+            <nav class="tabs">
+                <button class="tab active" data-tab="buy" data-l="tabBuy"></button>
+                <button class="tab" data-tab="tickets" data-l="tabMyTickets"></button>
+                <button class="tab" data-tab="winners" data-l="tabWinners"></button>
+                <button class="tab" data-tab="info" data-l="tabInfo"></button>
+            </nav>
+
+            <section class="tab-content" id="tab-buy">
+                <h2 data-l="pickNumbers"></h2>
+                <div class="numbers-grid" id="numbersGrid"></div>
+                <div class="selected-row">
+                    <button class="wood-btn muted small" id="quickPickBtn" data-l="quickPick"></button>
+                    <span class="selected-count"><span data-l="selected"></span>: <b id="selectedCount">0</b> / <b id="requiredCount">0</b></span>
+                    <button class="wood-btn muted small" id="clearBtn" data-l="clear"></button>
+                </div>
+            </section>
+
+            <section class="tab-content hidden" id="tab-tickets">
+                <h2 data-l="yourTickets"></h2>
+                <div class="list" id="ticketsList"></div>
+            </section>
+
+            <section class="tab-content hidden" id="tab-winners">
+                <h2 data-l="pastWinners"></h2>
+                <div class="list" id="winnersList"></div>
+            </section>
+
+            <section class="tab-content hidden" id="tab-info">
+                <h2 data-l="howItWorks"></h2>
+                <div class="list">
+                    <div class="row"><span data-l="rowTicketPrice"></span><b id="infoTicketPrice">-</b></div>
+                    <div class="row"><span data-l="rowPickNumbers"></span><b id="infoPickRange">-</b></div>
+                    <div class="row"><span data-l="rowNumbersPerTicket"></span><b id="infoNumbersPerTicket">-</b></div>
+                    <div class="row"><span data-l="rowMaxPerDraw"></span><b id="infoMaxPerDraw">-</b></div>
+                    <div class="row"><span data-l="rowDrawTime"></span><b id="infoDrawTime">-</b></div>
+                </div>
+                <h2 data-l="prizeBreakdown"></h2>
+                <div class="list" id="prizeBreakdown"></div>
+            </section>
+
+            <div class="actions">
+                <button class="wood-btn" id="buyBtn" disabled>-</button>
+            </div>
+        </div>
+    </div>
+    <script src="../js/lottery.js"></script>
+</body>
+</html>
