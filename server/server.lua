@@ -1,5 +1,4 @@
 local RSGCore = exports['rsg-core']:GetCoreObject()
-lib.locale()
 
 local currentJackpot = Config.BaseJackpot
 local busy = {}            -- per-player lock for buy / collect
@@ -109,7 +108,7 @@ local function getCharacterName(citizenid)
 end
 
 local function notify(target, title, description, nType, duration)
-    TriggerClientEvent('ox_lib:notify', target, {
+    TriggerClientEvent('RSGCore:Client:Notify', target, {
         title = title, description = description, type = nType, duration = duration or 5000,
     })
 end
@@ -295,19 +294,19 @@ end
 ---------------------------------------------------------------------
 -- Callbacks
 ---------------------------------------------------------------------
-lib.callback.register('rsg-lottery:server:buyTicket', function(src, numbers)
+RSGCore.Functions.CreateCallback('rsg-lottery:server:buyTicket', function(src, cb, numbers)
     local clean = validateNumbers(numbers)
-    if not clean then return false end
-    return withPlayer(src, false, purchaseTicket, clean)
+    if not clean then return cb(false) end
+    return cb(withPlayer(src, false, purchaseTicket, clean))
 end)
 
-lib.callback.register('rsg-lottery:server:collectPrizes', function(src)
-    return withPlayer(src, 0, collectPrizes)
+RSGCore.Functions.CreateCallback('rsg-lottery:server:collectPrizes', function(src, cb)
+    return cb(withPlayer(src, 0, collectPrizes))
 end)
 
-lib.callback.register('rsg-lottery:server:getMyTickets', function(src)
+RSGCore.Functions.CreateCallback('rsg-lottery:server:getMyTickets', function(src, cb)
     local Player = RSGCore.Functions.GetPlayer(src)
-    if not Player then return {} end
+    if not Player then return cb({}) end
     local rows = MySQL.query.await(
         'SELECT ticket_number, numbers FROM rsg_lottery_tickets WHERE citizenid = ? AND draw_date = ? ORDER BY id ASC',
         { Player.PlayerData.citizenid, getOpenDrawDate() }) or {}
@@ -315,10 +314,10 @@ lib.callback.register('rsg-lottery:server:getMyTickets', function(src)
     for i, t in ipairs(rows) do
         result[i] = { ticket = t.ticket_number, numbers = json.decode(t.numbers) or {} }
     end
-    return result
+    return cb(result)
 end)
 
-lib.callback.register('rsg-lottery:server:getJackpotInfo', function(src)
+RSGCore.Functions.CreateCallback('rsg-lottery:server:getJackpotInfo', function(src, cb)
     local Player = RSGCore.Functions.GetPlayer(src)
     local drawDate = getOpenDrawDate()
     local ticketsLeft = 0
@@ -332,7 +331,7 @@ lib.callback.register('rsg-lottery:server:getJackpotInfo', function(src)
     end
     table.sort(prizes, function(a, b) return a.match > b.match end)
 
-    return {
+    return cb({
         jackpot = currentJackpot,
         ticketPrice = Config.TicketPrice,
         maxPerDraw = Config.MaxTicketsPerDraw,
@@ -343,10 +342,10 @@ lib.callback.register('rsg-lottery:server:getJackpotInfo', function(src)
         secondsToDraw = getNextDrawTimestamp() - os.time(),
         drawTime = ('%02d:%02d'):format(DRAW_HOUR, DRAW_MIN),
         prizes = prizes,
-    }
+    })
 end)
 
-lib.callback.register('rsg-lottery:server:getPastWinners', function()
+RSGCore.Functions.CreateCallback('rsg-lottery:server:getPastWinners', function(_, cb)
     local rows = MySQL.query.await([[
         SELECT w.winner_name, w.prize, w.match_count, w.win_type, d.winning_number,
                DATE_FORMAT(w.draw_date, '%Y-%m-%d') AS draw_date
@@ -365,7 +364,7 @@ lib.callback.register('rsg-lottery:server:getPastWinners', function()
             winType = w.win_type,
         }
     end
-    return result
+    return cb(result)
 end)
 
 AddEventHandler('playerDropped', function()
@@ -375,7 +374,7 @@ end)
 ---------------------------------------------------------------------
 -- Startup
 ---------------------------------------------------------------------
-lib.cron.new(Config.DrawCron, runDueDraws)
+RSGCore.Functions.CreateCron(Config.DrawCron, runDueDraws)
 
 MySQL.ready(function()
     MySQL.query.await([[CREATE TABLE IF NOT EXISTS rsg_lottery_config (

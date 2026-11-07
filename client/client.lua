@@ -1,15 +1,15 @@
-lib.locale()
+local RSGCore = exports['rsg-core']:GetCoreObject()
 
 local isOpen = false
 local blips = {}
-local points = {}
+local sellerPoints = {}
 
 ---------------------------------------------------------------------
 -- Seller peds (spawned only while a player is nearby)
 ---------------------------------------------------------------------
 local function spawnSeller(point)
     local model = joaat(point.seller.model)
-    if not lib.requestModel(model, 10000) then return end
+    if not pcall(RSGCore.Functions.RequestModel, model, 10000) then return end
 
     local c = point.seller.coords
     local ped = CreatePed(model, c.x, c.y, c.z - 1.0, point.seller.heading, false, false, false, false)
@@ -19,7 +19,7 @@ local function spawnSeller(point)
     FreezeEntityPosition(ped, true)
     SetBlockingOfNonTemporaryEvents(ped, true)
 
-    exports.ox_target:addLocalEntity(ped, {
+    exports['rsg-target']:addLocalEntity(ped, {
         {
             label = locale('interact_buy_ticket'),
             icon = 'fas fa-ticket',
@@ -32,7 +32,7 @@ end
 
 local function despawnSeller(point)
     if point.ped and DoesEntityExist(point.ped) then
-        exports.ox_target:removeLocalEntity(point.ped)
+        exports['rsg-target']:removeLocalEntity(point.ped)
         DeleteEntity(point.ped)
     end
     point.ped = nil
@@ -48,7 +48,7 @@ CreateThread(function()
             blips[#blips + 1] = blip
         end
 
-        points[#points + 1] = lib.points.new({
+        sellerPoints[#sellerPoints + 1] = points.new({
             coords = seller.coords,
             distance = Config.SpawnDistance or 60.0,
             seller = seller,
@@ -90,9 +90,9 @@ function OpenLotteryUI()
     if isOpen then return end
     isOpen = true
 
-    local total = lib.callback.await('rsg-lottery:server:collectPrizes', false)
+    local total = RSGCore.Functions.AwaitCallback('rsg-lottery:server:collectPrizes')
     if total and total > 0 then
-        lib.notify({
+        RSGCore.Functions.Notify({
             title = locale('notify_collected_title'),
             description = locale('notify_collected_desc', total),
             type = 'success',
@@ -125,13 +125,13 @@ local NUI_CALLBACKS = {
 
 for name, event in pairs(NUI_CALLBACKS) do
     RegisterNUICallback(name, function(_, cb)
-        cb(lib.callback.await(event, false) or {})
+        cb(RSGCore.Functions.AwaitCallback(event) or {})
     end)
 end
 
 RegisterNUICallback('buy', function(data, cb)
     if not isOpen or type(data) ~= 'table' or type(data.numbers) ~= 'table' then return cb(false) end
-    cb(lib.callback.await('rsg-lottery:server:buyTicket', false, data.numbers) == true)
+    cb(RSGCore.Functions.AwaitCallback('rsg-lottery:server:buyTicket', nil, data.numbers) == true)
 end)
 
 ---------------------------------------------------------------------
@@ -140,9 +140,9 @@ end)
 AddEventHandler('onResourceStop', function(resource)
     if resource ~= GetCurrentResourceName() then return end
     if isOpen then SetNuiFocus(false, false) end
-    for _, point in ipairs(points) do
-        despawnSeller(point)
+    for _, point in ipairs(sellerPoints) do
         point:remove()
+        despawnSeller(point)
     end
     for _, blip in ipairs(blips) do RemoveBlip(blip) end
 end)

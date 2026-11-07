@@ -12,16 +12,15 @@ A daily lottery for the RSG Framework (RedM). Players buy tickets from seller NP
 - **Ticket sellers** in Valentine, Strawberry, Blackwater, Armadillo, Rhodes, Saint Denis and Van Horn, with map blips. Peds only spawn when a player is nearby.
 - **My Tickets, Past Winners and Info tabs** with a full prize breakdown
 - **Discord webhooks** for ticket purchases, draw results, winners and jackpots (the URL is kept server-side)
-- **10 languages** through ox_lib locales: en, de, el, es, fr, ja, nl, pl, pt-br, ro
+- **10 languages** through rsg-core locales: en, de, el, es, fr, ja, nl, pl, pt-br, ro
 - **RDR2-style dark UI** in the leather and gold theme
 - **Exploit-safe**: all checks and money handling happen on the server, with per-player locks so prizes can't be paid twice
 
 ## Dependencies
 
 - [rsg-core](https://github.com/Rexshack-RedM/rsg-core)
-- [ox_lib](https://github.com/overextended/ox_lib)
 - [oxmysql](https://github.com/overextended/oxmysql)
-- [ox_target](https://github.com/overextended/ox_target)
+- [rsg-target](https://github.com/Rexshack-RedM/rsg-target)
 
 ## Installation
 
@@ -107,7 +106,7 @@ Included: `en`, `de`, `el`, `es`, `fr`, `ja`, `nl`, `pl`, `pt-br`, `ro`.
 Set the language in `server.cfg`:
 
 ```
-setr ox:locale de
+setr rsg:locale de
 ```
 
 To add a language, copy `locales/en.json` to `locales/<code>.json` and translate the values. Keep every `%s` placeholder in place.
@@ -128,4 +127,4 @@ If you enjoy this resource, you can support development here: https://buymeacoff
 ## Credits
 
 - RexShack
-- RSG Framework, ox_lib, oxmysql, ox_target
+- RSG Framework, oxmysql, rsg-target
