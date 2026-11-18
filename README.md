@@ -128,3 +128,7 @@ If you enjoy this resource, you can support development here: https://buymeacoff
 
 - RexShack
 - RSG Framework, oxmysql, rsg-target
+
+## Database
+
+Tables (`rsg_lottery_config`, `rsg_lottery_draws`, `rsg_lottery_tickets`, `rsg_lottery_winners`) are created automatically on first start while `Config.AutoDatabase = true` (default); the database user needs `CREATE` permission. To install manually, set `Config.AutoDatabase = false` in the config and import `installation/rsg_lottery.sql` once.

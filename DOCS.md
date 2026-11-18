@@ -34,3 +34,66 @@ Each `Config.TicketSellers` entry is an rsg-core point (`@rsg-core/client/points
 
 ## Database
 Tables (`rsg_lottery_config`, `rsg_lottery_draws`, `rsg_lottery_tickets`, `rsg_lottery_winners`) are created automatically on start. A manual import is also available in `installation/rsg_lottery.sql`.
+
+<!-- BEGIN AUTO-REFERENCE (generated from the code; re-run the generator instead of editing by hand) -->
+
+## Technical reference
+
+Generated from the source of **rsg-lottery 3.0.1**. Names, arguments and defaults below are read straight from the code.
+
+### Dependencies
+
+`rsg-core`, `oxmysql`, `rsg-target`
+
+### Database
+
+Tables: `rsg_lottery_config`, `rsg_lottery_draws`, `rsg_lottery_tickets`, `rsg_lottery_winners`.
+
+Tables are created automatically on start while `Config.AutoDatabase = true` (default). Nothing is ever dropped or overwritten.
+For a manual install set `Config.AutoDatabase = false` and import `installation/rsg_lottery.sql` once.
+
+```lua
+-- shared/config.lua
+Config.AutoDatabase = true -- false = import the SQL file yourself
+```
+
+### Configuration
+
+| Option | Default | Notes |
+|---|---|---|
+| `Config.AutoDatabase` | `true` | build the database tables automatically on start (set false and import the SQL file for a manual install) |
+| `Config.TicketPrice` | `10` |  |
+| `Config.NumbersPerTicket` | `5` |  |
+| `Config.NumberMin` | `1` |  |
+| `Config.NumberMax` | `20` |  |
+| `Config.MaxTicketsPerDraw` | `5` |  |
+| `Config.BaseJackpot` | `100` |  |
+| `Config.PayoutMethod` | `'cash'` | cash or bank (how prizes are paid out) |
+| `Config.Prizes` | `table` | matched numbers = prize in $ ('jackpot' = share of the jackpot) |
+| `Config.DrawCron` | `'0 21 * * *'` | daily draw time in 'minute hour * * *' format (server time) |
+| `Config.TicketSellers` | `table` |  |
+| `Config.SpawnDistance` | `60.0` | peds spawn when a player is within this distance |
+| `Config.Blip` | `table` |  |
+
+### Callbacks
+
+| Callback | Side | Arguments | File |
+|---|---|---|---|
+| `rsg-lottery:server:buyTicket` | server | `src, cb, numbers` | `server/server.lua` |
+| `rsg-lottery:server:collectPrizes` | server | `src, cb` | `server/server.lua` |
+| `rsg-lottery:server:getMyTickets` | server | `src, cb` | `server/server.lua` |
+| `rsg-lottery:server:getJackpotInfo` | server | `src, cb` | `server/server.lua` |
+| `rsg-lottery:server:getPastWinners` | server | `_, cb` | `server/server.lua` |
+
+```lua
+-- client side
+RSGCore.Functions.TriggerCallback('rsg-lottery:server:buyTicket', function(result)
+    -- use result
+end, numbers)
+```
+
+### Locales
+
+Language files in `locales/`: `de`, `el`, `en`, `es`, `fr`, `ja`, `nl`, `pl`, `pt-br`, `ro`. Set the language with `setr rsg:locale "en"`.
+
+<!-- END AUTO-REFERENCE -->
