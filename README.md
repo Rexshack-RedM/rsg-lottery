@@ -12,7 +12,7 @@ A daily lottery for the RSG Framework (RedM). Players buy tickets from seller NP
 - **Ticket sellers** in Valentine, Strawberry, Blackwater, Armadillo, Rhodes, Saint Denis and Van Horn, with map blips. Peds only spawn when a player is nearby.
 - **My Tickets, Past Winners and Info tabs** with a full prize breakdown
 - **Discord webhooks** for ticket purchases, draw results, winners and jackpots (the URL is kept server-side)
-- **10 languages** through rsg-core locales: en, de, el, es, fr, ja, nl, pl, pt-br, ro
+- **11 languages** through rsg-core locales: en, de, el, es, fr, ja, nl, pl, pt-br, ro, ru
 - **RDR2-style dark UI** in the leather and gold theme
 - **Exploit-safe**: all checks and money handling happen on the server, with per-player locks so prizes can't be paid twice
 
@@ -101,7 +101,7 @@ ServerConfig.Webhook = {
 
 All player-facing text (notifications, the target label, the blip name, the UI and webhooks) lives in `locales/*.json`.
 
-Included: `en`, `de`, `el`, `es`, `fr`, `ja`, `nl`, `pl`, `pt-br`, `ro`.
+Included: `en`, `de`, `el`, `es`, `fr`, `ja`, `nl`, `pl`, `pt-br`, `ro`, `ru`.
 
 Set the language in `server.cfg`:
 
